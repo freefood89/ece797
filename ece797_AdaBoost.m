@@ -85,6 +85,9 @@ figure;
 plot(set(1,sol==1),set(2,sol==1),'b.'); hold on;
 plot(set(1,sol==-1),set(2,sol==-1),'r.');
 
+Htrain = sign(Htrain);
+missed = logical((1-sol.*Htrain)/2);
+plot(set(1,missed),set(2,missed),'go');
 for p=1:iter
     if (h_dim(p)==1)
         plot([ht(p) ht(p)],[-1 1]);
@@ -92,12 +95,10 @@ for p=1:iter
         plot([-1 1],[ht(p) ht(p)]);
     end
 end
-Htrain = sign(Htrain);
-missed = logical((1-sol.*Htrain)/2);
-plot(set(1,missed),set(2,missed),'go');
+
 hold off;
 xlabel('E_1'); ylabel('E_2'); title('training set');
-legend('Face','Not Face','ht','Error');
+legend('Face','Not Face','Error');
 
 %%
 
