@@ -7,9 +7,9 @@ imType = '*.pgm';
 list = dir([imPath imType]);
 image = double(imread([imPath list(1).name]));
 [nrows,ncols] = size(image);
-Y = zeros(nrows*ncols, length(list));
+Y = zeros(128*128, length(list));
 for n=1:length(list)
-    image = double(histeq(uint8(imread([imPath list(n).name]))));
+    image = double(histeq(uint8(imresize(imread([imPath list(n).name]),[128 128]))));
     image = image - mean(image(:));
     image = image / norm(image(:));
     [nrows,ncols] = size(image);
@@ -25,7 +25,6 @@ figure, imagesc(eigface);
 
 %% Scan Photos for Faces
 
-eigface = imresize(eigface, [128 128]);
 save('eigface.mat','eigface');
 save('eigfaces.mat','eigfaces');
 
