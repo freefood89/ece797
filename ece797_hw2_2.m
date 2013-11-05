@@ -1,6 +1,6 @@
 %% HW2 - Part2: Facial Recognition
 %% INIT
-close all;
+% close all;
 
 %% Load eigenface
 s = [32 64 48 96 128];
@@ -31,7 +31,7 @@ for sn = 1:length(s)
     c = [s(sn) s(sn)];
     tmp = m;
     tmp(tmp<max(m(:))*0.6)=0;
-    figure, imagesc(tmp);
+    figure, imagesc(m);
 %     [y,x] = find(max(m(:))==m);
 %     m(y:y+s(sn)-1,x:x+s(sn)-1) = -Inf;
 %     [y2,x2] = find(max(m(:))==m);

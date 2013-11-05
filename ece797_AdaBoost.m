@@ -59,7 +59,6 @@ for q=1:iter
         end
         %     figure, plot(thresholds, [e_t; abs(e_t-0.5)]);
     end
-    'outerloop'
     h_dim(q) = min(find(e==min(e))); % eigface with the best classifier
     seth = set(h_dim(q),:);
     st(q) = side(h_dim(q));
