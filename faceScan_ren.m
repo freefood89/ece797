@@ -1,33 +1,51 @@
 function score = faceScan_ren(E, A)
 
 [M_E, N_E] = size(E);
+area = (M_E*N_E);
 [M_A, N_A] = size(A);
 %first compute the integral image
 intA = cumsum(cumsum(A,1),2);
 intA2 = cumsum(cumsum(A.^2,1),2);
 %Now, at each pixel compute the mean
-patchmuA = size(M_A-M_E+1,N_A-N_E+1);
-patchnormA = size(M_A-M_E+1,N_A-N_E+1);
-for i = 1:M_A - M_E + 1
-    for j = 1:N_A - N_E + 1
-        a1 = intA(i,j);
-        a2 = intA(i+M_E-1,j);
-        a3 = intA(i,j+N_E-1);
+patchmean = size(M_A-M_E+1,N_A-N_E+1);
+patchnorm = size(M_A-M_E+1,N_A-N_E+1);
+
+i=1;
+patchmean(1,1) = intA(M_E,N_E)/area;
+patchnorm(1,1) = sqrt(intA2(M_E,N_E));
+for j = 2:N_A - N_E +1
+    a2 = intA(i+M_E-1,j-1);
+    a4 = intA(i+M_E-1,j+N_E-1);
+    patchmean(i,j) = (a4 - a2)/area;
+    a2 = intA2(i+M_E-1,j-1);
+    a4 = intA2(i+M_E-1,j+N_E-1);
+    patchnorm(i,j) = sqrt(a4 - a2);
+end
+j=1;
+for i = 2:M_A - M_E +1
+    a3 = intA(i-1,j+N_E-1);
+    a4 = intA(i+M_E-1,j+N_E-1);
+    patchmean(i,j) = (a4 - a3)/area;
+    a3 = intA2(i-1,j+N_E-1);
+    a4 = intA2(i+M_E-1,j+N_E-1);
+    patchnorm(i,j) = sqrt(a4 - a3);
+end
+for i = 2:M_A - M_E +1
+    for j = 2:N_A - N_E +1
+        a1 = intA(i-1,j-1);
+        a2 = intA(i+M_E-1,j-1);
+        a3 = intA(i-1,j+N_E-1);
         a4 = intA(i+M_E-1,j+N_E-1);
-        patchmuA(i,j) = a4 + a1 - a2 - a3;
-        a1 = intA2(i,j);
-        a2 = intA2(i+M_E-1,j);
-        a3 = intA2(i,j+N_E-1);
+        patchmean(i,j) = (a4 + a1 - a2 - a3)/area;
+        a1 = intA2(i-1,j-1);
+        a2 = intA2(i+M_E-1,j-1);
+        a3 = intA2(i-1,j+N_E-1);
         a4 = intA2(i+M_E-1,j+N_E-1);
-        patchnormA(i,j) = sqrt(a4 + a1 - a2 - a3); 
+        patchnorm(i,j) = sqrt(a4 + a1 - a2 - a3);
     end
 end
 convolved = conv2(double(A), double(fliplr(flipud(E))),'valid');
 sumE = sum(E(:));
-score = convolved - sumE*patchmuA;%/(M_E*N_E);
-score = score./patchnormA;
-% figure;
-% subplot(131), imagesc(convolved); title('Convolution');
-% subplot(132), imagesc(sumE*patchmuA); title('Patch Means');
-% subplot(133), imagesc(patchnormA); title('Patch Norms');
+score = convolved - sumE*patchmean;
+score = score./patchnorm;
 end
