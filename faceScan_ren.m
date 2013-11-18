@@ -6,19 +6,19 @@ function score = faceScan_ren(E, A)
 intA = cumsum(cumsum(A,1),2);
 intA2 = cumsum(cumsum(A.^2,1),2);
 %Now, at each pixel compute the mean
-patchmuA = [];
-patchnormA = [];
-for i = 1:M_A - N_E + 1
-    for j = 1:N_A - M_E + 1
+patchmuA = size(M_A-M_E+1,N_A-N_E+1);
+patchnormA = size(M_A-M_E+1,N_A-N_E+1);
+for i = 1:M_A - M_E + 1
+    for j = 1:N_A - N_E + 1
         a1 = intA(i,j);
-        a2 = intA(i+N_E-1,j);
-        a3 = intA(i,j+M_E-1);
-        a4 = intA(i+N_E-1,j+M_E-1);
+        a2 = intA(i+M_E-1,j);
+        a3 = intA(i,j+N_E-1);
+        a4 = intA(i+M_E-1,j+N_E-1);
         patchmuA(i,j) = a4 + a1 - a2 - a3;
         a1 = intA2(i,j);
-        a2 = intA2(i+N_E-1,j);
-        a3 = intA2(i,j+M_E-1);
-        a4 = intA2(i+N_E-1,j+M_E-1);
+        a2 = intA2(i+M_E-1,j);
+        a3 = intA2(i,j+N_E-1);
+        a4 = intA2(i+M_E-1,j+N_E-1);
         patchnormA(i,j) = sqrt(a4 + a1 - a2 - a3); 
     end
 end
