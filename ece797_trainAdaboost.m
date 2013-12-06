@@ -118,4 +118,5 @@ for p=1:length(ht)
     class = sign(Htest);
     misst(p) = sum(logical((1-sol.*class)/2))/(numF+numNF);
 end
-
+%%
+save('adaboost.mat','side','h_dim','ht','at');
