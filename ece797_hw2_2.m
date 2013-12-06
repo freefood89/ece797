@@ -31,10 +31,10 @@ for sn = 4:4%length(s)
     %     c = [s(sn) s(sn)];
     %     tmp = m;
     %     tmp(tmp<max(m(:))*0.6)=0;
-    figure, imagesc(score);
-    [y,x] = find(score>0.15);
-    figure, imshow(image);
-    figure, imshow(uint8(image));
-    hold on;
-    plot(x,y,'o'); hold off
+%     figure, imagesc(score);
+    figure, imshow(uint8(image)); hold on;
+    [y,x] = find(score==max(score(:)));
+    drawRect_ren([x y],size(E)); hold off;
+    
+%     figure, hist(score(:),50);
 end
