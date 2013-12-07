@@ -4,7 +4,7 @@
 close all
 
 s = [32 48 64 96 128];
-s = [96];
+
 load('eigfaces.mat');
 load('adaboost.mat');
 K=length(ht);
@@ -13,11 +13,11 @@ facelist = [];
 imPath = 'group_photos/';
 imType = '*.jpg';
 list = dir([imPath imType]);
-n=1;
+n=3; %Set group photo here
 % for n=1:length(list)
-image = imread([imPath list(n).name]);
-if(size(image)>2);
-    image = squeeze(mean(image,3));
+image1 = imread([imPath list(n).name]);
+if(size(image1)>2);
+    image = squeeze(mean(image1,3));
 end
 
 for ss=1:length(s)
@@ -36,7 +36,7 @@ for ss=1:length(s)
         score = faceScan_ren(E,image);
         W(:,:,i) = score;
         % maybe display each one
-        %     figure, imagesc(score);
+        %     figureq, imagesc(score);
     end
     
     m = zeros((P-sn+1),(Q-sn+1));
@@ -57,7 +57,7 @@ for ss=1:length(s)
             
             Htest=0;
             for p=1:K
-                if(side(h_dim(p))==1)
+                if(side(h_dim(p))==-1)
                     Hx = 2*(W(i,j,h_dim(p)) > ht(p))-1; % faces are above threshold
                 else
                     Hx = 2*(W(i,j,h_dim(p)) < ht(p))-1; % faces are below threshold
@@ -73,6 +73,7 @@ for ss=1:length(s)
     
     for i=1:length(x)
         err = W(y(i),x(i),end);
+        err = -mm(y(i),x(i));
         facelist = [facelist; [x(i) y(i) sn sn err]];
     end
 end
@@ -82,7 +83,7 @@ facelist2 = facelist;
 [Y I] = sort(facelist(:,end),'ascend');
 facelist = facelist(I,:);
 
-for i=1:500%size(facelist,1)
+for i=1:size(facelist,1)
     if(facelist(i,5)~=-1)
         xi = facelist(i,1);
         yi = facelist(i,2);
@@ -104,9 +105,9 @@ for i=1:500%size(facelist,1)
     end
 end
 %%
-figure, imagesc(image); hold on;
-for i=1:size(facelist,1)
-    if(facelist(i,5)~=-1)
-        drawRect_ren(facelist(i,1:2), facelist(i,3:4));
-    end
+faces = facelist(facelist(:,5)~=-1,:);
+figure, imshow(imread([imPath list(n).name])); hold on;
+for i=1:min(50,size(faces,1))
+    drawRect_ren(faces(i,1:2), faces(i,3:4));
 end
+hold off

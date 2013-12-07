@@ -77,9 +77,9 @@ end
 %% Displaying Results
 % Display multiple classifiers
 figure;
-plot(set(1,sol==1),set(2,sol==1),'b.'); hold on;
-plot(set(1,sol==-1),set(2,sol==-1),'r.');
-%%
+plot(set(1,sol==1),set(2,sol==1),'bx'); hold on;
+plot(set(1,sol==-1),set(2,sol==-1),'rx');
+
 Htrain = sign(Htrain);
 missed = logical((1-sol.*Htrain)/2);
 plot(set(1,missed),set(2,missed),'go');
@@ -104,8 +104,13 @@ set = [Wf Wnf];
 numNF = size(Wnf,2);
 sol = [ones(1,numF) -ones(1,numNF)];
 Htest=0;
+
+figure;
+plot(set(1,sol==1),set(2,sol==1),'bx'); hold on;
+plot(set(1,sol==-1),set(2,sol==-1),'rx');
+
 for p=1:length(ht)
-    if(side(h_dim(p))==1)
+    if(side(h_dim(p))==-1)
         Hx = 2*(set(h_dim(p),:) > ht(p))-1; % faces are above threshold
     else
         Hx = 2*(set(h_dim(p),:) < ht(p))-1; % faces are below threshold
@@ -114,6 +119,11 @@ for p=1:length(ht)
     class = sign(Htest);
     misst(p) = sum(logical((1-sol.*class)/2))/(numF+numNF);
 end
+missed = logical((1-sol.*Htest)/2);
+plot(set(1,missed),set(2,missed),'go');
+hold off;
+xlabel('E_1'); ylabel('E_2'); title('training set');
+legend('Face','Not Face','Error');
 misst
 %%
 save(outfile,'side','h_dim','ht','at');
