@@ -2,8 +2,9 @@
 
 %% Load eigenface
 close all
+
 s = [32 48 64 96 128];
-s = [96 128];
+s = [96];
 load('eigfaces.mat');
 load('adaboost.mat');
 K=length(ht);
@@ -75,14 +76,13 @@ for ss=1:length(s)
         facelist = [facelist; [x(i) y(i) sn sn err]];
     end
 end
-%%
-
-% sort in order of ascending error
 facelist2 = facelist;
+%%
+% sort in order of ascending error
 [Y I] = sort(facelist(:,end),'ascend');
 facelist = facelist(I,:);
 
-for i=1:min(200,size(facelist,1))
+for i=1:500%size(facelist,1)
     if(facelist(i,5)~=-1)
         xi = facelist(i,1);
         yi = facelist(i,2);
@@ -97,7 +97,7 @@ for i=1:min(200,size(facelist,1))
                 if((xj-si<xi) && (xi<xj+sj)) && ((yj-si<yi) && (yi<yj+sj))
                     facelist(i,5) = -1;
 %                     [xi yi xj yj]
-                    [i,j]
+                    [i,j];
                 end
             end
         end
@@ -105,7 +105,7 @@ for i=1:min(200,size(facelist,1))
 end
 %%
 figure, imagesc(image); hold on;
-for i=1:200%size(facelist,1)
+for i=1:size(facelist,1)
     if(facelist(i,5)~=-1)
         drawRect_ren(facelist(i,1:2), facelist(i,3:4));
     end

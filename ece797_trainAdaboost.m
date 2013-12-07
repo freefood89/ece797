@@ -1,18 +1,13 @@
-%% 18797 Boosting Based Face Detector
-
-if(0) 
-    ece797_hw2_parameterize; 
-end
-clear all;
+function ece797_trainAdaboost(infile1,infile2,outfile)
 %% Load Image Vectors
 
-load('trainingVectors.mat');
+load(infile1);
 [K, numF] = size(Wf);
 numNF = size(Wnf,2);
 
 %% Constant Definition and Allocation
 
-iter= 20;
+iter= K;
 
 ht = zeros(1,iter); % classifier threshold
 st = zeros(1,iter); % classifier direction
@@ -84,7 +79,7 @@ end
 figure;
 plot(set(1,sol==1),set(2,sol==1),'b.'); hold on;
 plot(set(1,sol==-1),set(2,sol==-1),'r.');
-
+%%
 Htrain = sign(Htrain);
 missed = logical((1-sol.*Htrain)/2);
 plot(set(1,missed),set(2,missed),'go');
@@ -102,7 +97,8 @@ legend('Face','Not Face','Error');
 
 %%
 
-load('testingVectors.mat');
+display('Testing Trained Classifier on Test Feature Vectors')
+load(infile2);
 set = [Wf Wnf];
 [K, numF] = size(Wf);
 numNF = size(Wnf,2);
@@ -118,5 +114,7 @@ for p=1:length(ht)
     class = sign(Htest);
     misst(p) = sum(logical((1-sol.*class)/2))/(numF+numNF);
 end
+misst
 %%
-save('adaboost.mat','side','h_dim','ht','at');
+save(outfile,'side','h_dim','ht','at');
+end
